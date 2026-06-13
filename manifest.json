@@ -1,0 +1,17 @@
+{
+  "name": "Mundial 2026 Tracker",
+  "short_name": "Mundial 26",
+  "description": "Tracker personal para el Mundial de Fútbol 2026",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#060e1a",
+  "theme_color": "#060e1a",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/2026_FIFA_World_Cup_logo_text.svg/512px-2026_FIFA_World_Cup_logo_text.svg.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -63,15 +63,17 @@
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
     }
-    .header-title { font-size: 16px; font-weight: 900; }
-    .header-sub   { font-size: 10px; color: var(--accent); font-weight: 700; letter-spacing: 2px; margin-top: 1px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-text h1 { font-size: 1.1rem; }
+    .gf-btn { flex: 0 0 auto; background: var(--bg3); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.3s; }
     .btn-logout   { padding: 6px 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 12px; cursor: pointer; }
     .user-name    { font-size: 11px; color: var(--muted); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* ── TABS ── */
-    .tabs { display: flex; background: #0a1628; border-bottom: 1px solid var(--bg3); }
-    .tab  { flex: 1; padding: 12px 0; background: none; border: none; cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 600; border-bottom: 2px solid transparent; transition: all .2s; }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tabs { display: flex; background: var(--bg3); padding: 5px; border-radius: var(--radius); gap: 5px; margin-bottom: 15px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { flex: 1; padding: 8px 12px; text-align: center; border-radius: 8px; cursor: pointer; color: var(--muted); font-weight: 600; font-size: 0.9rem; transition: 0.3s; min-width: max-content; }
+    .tab.active { background: var(--accent); color: #fff; }
 
     /* ── CONTENT ── */
     .content { max-width: 640px; margin: 0 auto; padding: 14px 12px 80px; }
@@ -80,10 +82,9 @@
     .group-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
     .group-filter::-webkit-scrollbar { height: 6px; }
     .group-filter::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 10px; }
-    .gf-btn { padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: var(--bg3); color: var(--muted); transition: all .2s; }
     .gf-btn.active { background: var(--accent); color: #fff; }
 
-    /* ── PHASE FILTER (elim) ── */
+    /* ── PHASE FILTER ── */
     .phase-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
     .pf-btn { padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: var(--bg3); color: var(--muted); transition: all .2s; }
     .pf-btn.active { background: #7c3aed; color: #fff; }
@@ -216,10 +217,14 @@
 ══════════════════════════════════════════ -->
 <div id="app" style="display:none">
   <header>
-    <div>
-      <div class="header-title">🏆 MUNDIAL 2026</div>
-      <div class="header-sub">MI TRACKER PERSONAL</div>
+    <div class="logo">
+      <div class="header-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/2026_FIFA_World_Cup_logo_text.svg/512px-2026_FIFA_World_Cup_logo_text.svg.png" alt="Mundial 2026" style="height:40px; object-fit:contain;" /></div>
+      <div class="logo-text">
+        <h1>Mundial 2026</h1>
+        <span style="font-size: 0.75rem; letter-spacing: 0.5px;">🇺🇸 ESTADOS UNIDOS · 🇲🇽 MÉXICO · 🇨🇦 CANADÁ</span>
+      </div>
     </div>
+    <button id="installAppBtn" style="display:none; background:var(--gold); color:#000; font-weight:bold; border:none; padding:5px 10px; border-radius:8px; cursor:pointer;">⬇️ Instalar App</button>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
       <div class="user-name">👤 Hola, <span id="user-name-display" style="font-weight:700; color:#fff;"></span></div>
       <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
@@ -293,7 +298,7 @@ const MATCH_DATES = [
   '11 Jun','12 Jun','13 Jun','14 Jun','15 Jun','16 Jun','17 Jun','18 Jun','19 Jun',
   '20 Jun','21 Jun','22 Jun','23 Jun','24 Jun','25 Jun','26 Jun','27 Jun'
 ];
-const TIMES = ['12:00', '15:00', '18:00', '21:00'];
+const TIMES = ['11:00', '14:00', '16:00', '17:00', '19:00', '20:00', '21:00', '23:00'];
 
 // Generador automático de 104 partidos para no depender de Supabase (Carga ultra rápida)
 let STATIC_MATCHES = [];
@@ -454,11 +459,12 @@ document.addEventListener('DOMContentLoaded', () => {
       startSession(JSON.parse(saved));
     } catch(e){}
   }
+  
+  if(window.location.hash) renderCurrentView();
+  else window.location.hash = '#dashboard';
 });
 
 async function loadAll() {
-  // Los partidos ya están cargados estáticamente en STATIC_MATCHES, por lo que nunca fallarán.
-  
   const { data: results } = await db.from('user_results').select('*').eq('user_id', currentUser.id);
   userResults = {};
   (results||[]).forEach(r => userResults[r.match_id] = r);
@@ -517,11 +523,9 @@ function renderPartidos() {
     html += '</div>';
 
     const groupMatches = allMatches.filter(m => m.group_name === filterGroup);
-    // Ordenar por número de partido dentro del grupo
     groupMatches.sort((a,b) => a.match_num - b.match_num);
     groupMatches.forEach(m => { html += matchCardHTML(m); });
   } else {
-    // Modo Fecha
     html += '<div class="group-filter" style="overflow-x:auto; flex-wrap:nowrap; padding-bottom:8px;">';
     MATCH_DATES.forEach(d => {
       html += `<button class="gf-btn ${d===filterDate?'active':''}" style="flex-shrink:0" onclick="setDate('${d}')">${d}</button>`;
@@ -529,7 +533,6 @@ function renderPartidos() {
     html += '</div>';
 
     const dateMatches = allMatches.filter(m => m.phase === 'Grupos' && m.date === filterDate);
-    // Ordenar por hora del partido
     dateMatches.sort((a,b) => a.time.localeCompare(b.time));
     
     if (dateMatches.length === 0) {
@@ -937,6 +940,25 @@ async function saveChampion(team) {
   } else {
     await db.from('user_predictions').insert([{ user_id: currentUser.id, champion: team }]);
   }
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('installAppBtn');
+  if(btn) {
+    btn.style.display = 'block';
+    btn.addEventListener('click', async () => {
+      btn.style.display = 'none';
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    });
+  }
+});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW Error:', err));
 }
 </script>
 </body>
