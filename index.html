@@ -217,15 +217,15 @@
 ══════════════════════════════════════════ -->
 <div id="app" style="display:none">
   <header>
-    <div class="logo" style="display:flex; align-items:center; gap:12px;">
-      <img src="./logo.png" alt="Mundial 2026" style="height:65px; object-fit:contain; filter: drop-shadow(0 0 5px rgba(255,215,0,0.15));" />
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        <h1 style="font-size:1.1rem; margin-bottom:0; color:#fff;">Mundial 2026</h1>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <div style="display:flex; flex-direction:column; font-size:12px; line-height:1.2;">
+    <div class="logo" style="display:flex; align-items:stretch; gap:12px; height:68px;">
+      <img src="./logo.png" alt="Mundial 2026" style="height:100%; width:auto; object-fit:contain; filter: drop-shadow(0 0 5px rgba(255,215,0,0.15));" />
+      <div style="display:flex; flex-direction:column; justify-content:space-between; padding:2px 0;">
+        <h1 style="font-size:1.15rem; margin-bottom:0; color:#fff; line-height:1;">Mundial 2026</h1>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; flex-direction:column; font-size:11px; line-height:1.1; justify-content:space-between;">
             <span>🇺🇸</span><span>🇨🇦</span><span>🇲🇽</span>
           </div>
-          <div style="color:#60a5fa; font-weight:800; font-size:0.55rem; letter-spacing:2px; line-height:1.4; text-transform:uppercase;">
+          <div style="color:#60a5fa; font-weight:800; font-size:0.55rem; letter-spacing:2.5px; line-height:1.4; text-transform:uppercase;">
             CANADÁ · MÉXICO · ESTADOS<br>UNIDOS
           </div>
         </div>
@@ -489,6 +489,14 @@ async function loadAll() {
 
   const { data: pred } = await db.from('user_predictions').select('*').eq('user_id', currentUser.id).maybeSingle();
   userChampion = pred ? pred.champion : null;
+
+  const customSchedules = JSON.parse(localStorage.getItem('mundial26_schedules')||'{}');
+  allMatches.forEach(m => {
+    if(customSchedules[m.id]) {
+      m.date = customSchedules[m.id].date;
+      m.time = customSchedules[m.id].time;
+    }
+  });
 }
 
 // ══════════════════════════════════════════
@@ -615,7 +623,11 @@ function matchCardHTML(m, isElim=false) {
     const editHome = isElim ? (homeTeam||'') : homeTeam;
     const editAway = isElim ? (awayTeam||'') : awayTeam;
 
-    html += `<div class="teams-row" style="margin-bottom:10px">
+    html += `<div style="display:flex; gap:8px; margin-bottom:12px;">
+      <input type="text" id="edit-date-${m.id}" value="${m.date}" class="elim-input" style="flex:1; padding:6px;" placeholder="Día (Ej: 11 Jun)">
+      <input type="time" id="edit-time-${m.id}" value="${m.time}" class="elim-input" style="flex:1; padding:6px;">
+    </div>
+    <div class="teams-row" style="margin-bottom:10px">
       <div class="team-box">
         <div class="team-flag">${flag(editHome)}</div>
         <div class="team-name">${editHome||'Local'}</div>
@@ -753,7 +765,22 @@ function removeGoal(matchId, index) {
 async function saveResult(matchId, isElim=false) {
   const hs = parseInt(document.getElementById(`edit-hs-${matchId}`)?.value);
   const as = parseInt(document.getElementById(`edit-as-${matchId}`)?.value);
-  if (isNaN(hs)||isNaN(as)||hs<0||as<0) { alert('Ingresa un marcador válido'); return; }
+  
+  // Guardar fecha/hora personalizada
+  const newDate = document.getElementById(`edit-date-${matchId}`)?.value;
+  const newTime = document.getElementById(`edit-time-${matchId}`)?.value;
+  if(newDate && newTime) {
+    let customSchedules = JSON.parse(localStorage.getItem('mundial26_schedules')||'{}');
+    customSchedules[matchId] = {date: newDate, time: newTime};
+    localStorage.setItem('mundial26_schedules', JSON.stringify(customSchedules));
+    const matchObj = allMatches.find(x=>x.id===matchId);
+    if(matchObj) { matchObj.date = newDate; matchObj.time = newTime; }
+  }
+
+  if (isNaN(hs)||isNaN(as)||hs<0||as<0) { 
+    if(newDate && newTime) { cancelEdit(); return; } // Si solo editó horario
+    alert('Ingresa un marcador válido'); return; 
+  }
 
   const hpEl = document.getElementById(`edit-hp-${matchId}`);
   const apEl = document.getElementById(`edit-ap-${matchId}`);
@@ -956,14 +983,28 @@ window.addEventListener('beforeinstallprompt', (e) => {
   const btn = document.getElementById('installAppBtn');
   if(btn) {
     btn.style.display = 'block';
-    btn.addEventListener('click', async () => {
+    btn.textContent = '⬇️ Instalar App';
+    btn.onclick = async () => {
       btn.style.display = 'none';
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       deferredPrompt = null;
-    });
+    };
   }
 });
+
+// Fallback si no aparece el prompt automático
+setTimeout(() => {
+  if (!deferredPrompt && window.innerWidth < 800 && !window.matchMedia('(display-mode: standalone)').matches) {
+    const btn = document.getElementById('installAppBtn');
+    if(btn) {
+      btn.style.display = 'block';
+      btn.textContent = 'ℹ️ Cómo Instalar';
+      btn.onclick = () => alert("Para instalar la App como nativa:\n\n1. Toca los 3 puntitos de tu navegador o el botón Compartir.\n2. Busca y toca 'Agregar a la pantalla principal' o 'Instalar aplicación'.\n3. ¡Aparecerá el logo en tu celular!");
+    }
+  }
+}, 3000);
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW Error:', err));
 }
