@@ -53,6 +53,7 @@
     .auth-msg { margin-top: 14px; font-size: 13px; text-align: center; padding: 8px; border-radius: 8px; }
     .auth-msg.error { background: #ef444420; color: #f87171; }
     .auth-msg.ok    { background: #22c55e20; color: #4ade80; }
+    .auth-warning { margin-top: 18px; font-size: 11px; text-align: center; color: #f87171; background: #ef444415; padding: 10px; border-radius: 8px; border: 1px solid #ef444430; font-weight: 600; line-height: 1.4; }
 
     /* ── HEADER ── */
     header {
@@ -183,11 +184,14 @@
       <input type="text" id="auth-username" placeholder="tu_apodo" />
     </div>
     <div class="field">
-      <label>CONTRASEÑA</label>
-      <input type="password" id="auth-password" placeholder="••••••••" />
+      <label>PIN SECRETO (Mínimo 6 números)</label>
+      <input type="password" id="auth-password" inputmode="numeric" placeholder="••••••" />
     </div>
     <button class="btn-primary" id="auth-btn" onclick="handleAuth()">Entrar</button>
     <div id="auth-msg" style="display:none" class="auth-msg"></div>
+    <div class="auth-warning">
+      ⚠️ ATENCIÓN: Por tu seguridad, si olvidas tu Apodo o tu PIN, <strong>NO PODRÁS RECUPERAR TUS DATOS</strong>. ¡Anota bien tu PIN!
+    </div>
   </div>
 </div>
 
@@ -201,7 +205,7 @@
       <div class="header-sub">MI TRACKER PERSONAL</div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-      <div class="user-name" id="user-name-display"></div>
+      <div class="user-name">👤 Hola, <span id="user-name-display" style="font-weight:700; color:#fff;"></span></div>
       <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </div>
   </header>
@@ -218,6 +222,10 @@
     <div id="view-elim" style="display:none"></div>
     <div id="view-tabla" style="display:none"></div>
     <div id="view-goles" style="display:none"></div>
+
+    <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; font-size: 11px; color: var(--muted); letter-spacing: 1px; font-weight: 700;">
+      DESARROLLADO POR CARLOS ANDRES JIMENEZ MURILLO
+    </div>
   </div>
 </div>
 
