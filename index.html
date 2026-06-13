@@ -300,8 +300,8 @@ async function handleAuth() {
   btn.disabled = true; btn.textContent = '...';
 
   // Usamos email derivado del usuario para Supabase Auth
-  // Formato: usuario+mundial2026@local (no es email real, es para Supabase internamente)
-  const fakeEmail = username.toLowerCase().replace(/\s/g, '_') + '+mundial2026@local';
+  // Formato: usuario@mundial2026.com (no es email real, es para Supabase internamente)
+  const fakeEmail = username.toLowerCase().replace(/\s/g, '_') + '@mundial2026.com';
 
   let error, data;
   if (authMode === 'login') {
