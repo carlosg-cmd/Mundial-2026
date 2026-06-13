@@ -1,0 +1,46 @@
+═══════════════════════════════════════════════════════════════════════════════
+  🚀 PRUEBA TU TRACKER EN 5 MINUTOS
+═══════════════════════════════════════════════════════════════════════════════
+
+PRE-REQUISITO:
+ ✅ Supabase configurado (COMIENZA_AQUI.txt PASO 1 y 2)
+ ✅ index.html con credenciales actualizadas
+
+PASO 1: Abre index.html en tu navegador
+───────────────────────────────────────
+- Arrastra index.html a Chrome/Firefox/Edge
+
+PASO 2: Click "Registrarse"
+───────────────────────────
+
+PASO 3: Ingresa datos
+──────────────────────
+Usuario/Apodo:  carlos_2026
+Contraseña:     MundialAbc123
+
+PASO 4: Click "Crear cuenta"
+────────────────────────────
+✅ Mensaje: "¡Cuenta creada! Puedes entrar ahora"
+
+PASO 5: Click "Entrar"
+──────────────────────
+
+PASO 6: ¡Entraste a la app!
+───────────────────────────
+Ver tu apodo en la esquina superior derecha
+
+PASO 7: Registra un resultado
+─────────────────────────────
+Click "+ Registrar resultado"
+Marcador: 2 - 1
+Goleadores: agregar nombres con ⚽
+Click "✅ Guardar"
+
+PASO 8: Ve tabla y goleadores
+──────────────────────────────
+Click "📊 TABLA" → posiciones automáticas
+Click "⚽ GOLEADORES" → ranking automático
+
+✅ ¡FUNCIONA TODO!
+
+═══════════════════════════════════════════════════════════════════════════════

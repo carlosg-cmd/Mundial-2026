@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════════════════════════════
+  🚀 MUNDIAL 2026 TRACKER — COMIENZA AQUÍ
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ TIENES 3 PASOS (15 MINUTOS):
+
+PASO 1: SUPABASE (5 min)
+────────────────────────
+1. Ve a https://supabase.com
+2. Sign In (crea cuenta si no tienes)
+3. New Project → Nombre: "mundial-2026"
+4. Espera ~1 minuto a que se cree
+5. Settings > API → Copia:
+   - Project URL (ej: https://xyzabc.supabase.co)
+   - anon public (string largo con "eyJ...")
+6. Ve a SQL Editor > New query
+7. Abre supabase_setup.sql
+8. Copia TODO el contenido
+9. Pega en SQL Editor
+10. Click Run (botón ▶️)
+✅ Listo, base de datos creada
+
+PASO 2: EDITAR CREDENCIALES (2 min)
+────────────────────────────────────
+1. Abre index.html con editor (VS Code, Notepad++, etc)
+2. Busca: const SUPABASE_URL = '...'
+3. Reemplaza con tu Project URL
+4. Busca: const SUPABASE_KEY = '...'
+5. Reemplaza con tu anon key
+6. Guarda (Ctrl+S)
+
+PASO 3: GITHUB PAGES (8 min)
+─────────────────────────────
+1. Ve a https://github.com/new
+2. Repository name: mundial-2026
+3. Visibility: Public
+4. Click Create repository
+5. En tu terminal:
+   git init
+   git add .
+   git commit -m "Initial"
+   git remote add origin [tu_repo_url]
+   git branch -M main
+   git push -u origin main
+6. En GitHub: Settings > Pages > Branch: main > Save
+7. Espera 1-2 minutos
+
+✅ TU APP EN: https://[usuario].github.io/mundial-2026
+
+═══════════════════════════════════════════════════════════════════════════════
+  PRUEBA ANTES DE SUBIR A GITHUB
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Abre index.html en tu navegador (arrastra a Chrome)
+2. Click "Registrarse"
+3. Usuario/Apodo: carlos_2026
+4. Contraseña: MundialAbc123
+5. Click "Crear cuenta"
+6. Click "Entrar"
+7. ¡Adentro!
+8. Registra un resultado (+ Registrar resultado)
+9. ¡Funciona!
+
+Si todo funciona, sube a GitHub.
+
+═══════════════════════════════════════════════════════════════════════════════
