@@ -217,7 +217,7 @@
 ══════════════════════════════════════════ -->
 <div id="app" style="display:none">
   <header>
-    <div class="logo" style="display:flex; align-items:stretch; gap:12px; height:68px;">
+    <div class="logo" style="display:flex; align-items:stretch; gap:12px; height:90px;">
       <img src="./logo.png" alt="Mundial 2026" style="height:100%; width:auto; object-fit:contain; filter: drop-shadow(0 0 5px rgba(255,215,0,0.15));" />
       <div style="display:flex; flex-direction:column; justify-content:space-between; padding:2px 0;">
         <h1 style="font-size:1.15rem; margin-bottom:0; color:#fff; line-height:1;">Mundial 2026</h1>
@@ -314,23 +314,78 @@ const TIMES = ['11:00', '14:00', '16:00', '17:00', '19:00', '20:00', '21:00', '2
 
 // Generador automático de 104 partidos para no depender de Supabase (Carga ultra rápida)
 let STATIC_MATCHES = [];
-let mId = 1;
-
-Object.keys(GROUPS).forEach((g, idx) => {
-  const t = GROUPS[g];
-  const d1 = MATCH_DATES[Math.floor(idx/2)];
-  const d2 = MATCH_DATES[Math.floor(idx/2) + 5];
-  const d3 = MATCH_DATES[Math.floor(idx/2) + 10];
-  
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[0], away_team: t[1], date: d1, time: TIMES[0], match_num: mId-1 });
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[2], away_team: t[3], date: d1, time: TIMES[2], match_num: mId-1 });
-  
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[0], away_team: t[2], date: d2, time: TIMES[1], match_num: mId-1 });
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[3], away_team: t[1], date: d2, time: TIMES[3], match_num: mId-1 });
-  
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[3], away_team: t[0], date: d3, time: TIMES[0], match_num: mId-1 });
-  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[1], away_team: t[2], date: d3, time: TIMES[2], match_num: mId-1 });
-});
+STATIC_MATCHES.push({"id":1,"phase":"Grupos","group_name":"A","home_team":"México","away_team":"Sudáfrica","date":"11 Jun","time":"14:00","match_num":1});
+STATIC_MATCHES.push({"id":2,"phase":"Grupos","group_name":"A","home_team":"Corea del Sur","away_team":"República Checa","date":"11 Jun","time":"21:00","match_num":2});
+STATIC_MATCHES.push({"id":3,"phase":"Grupos","group_name":"B","home_team":"Canadá","away_team":"Bosnia y Herzegovina","date":"12 Jun","time":"14:00","match_num":3});
+STATIC_MATCHES.push({"id":4,"phase":"Grupos","group_name":"D","home_team":"Estados Unidos","away_team":"Paraguay","date":"12 Jun","time":"20:00","match_num":4});
+STATIC_MATCHES.push({"id":5,"phase":"Grupos","group_name":"B","home_team":"Qatar","away_team":"Suiza","date":"13 Jun","time":"14:00","match_num":5});
+STATIC_MATCHES.push({"id":6,"phase":"Grupos","group_name":"C","home_team":"Brasil","away_team":"Marruecos","date":"13 Jun","time":"17:00","match_num":6});
+STATIC_MATCHES.push({"id":7,"phase":"Grupos","group_name":"C","home_team":"Haití","away_team":"Escocia","date":"13 Jun","time":"20:00","match_num":7});
+STATIC_MATCHES.push({"id":8,"phase":"Grupos","group_name":"D","home_team":"Australia","away_team":"Turquía","date":"13 Jun","time":"23:00","match_num":8});
+STATIC_MATCHES.push({"id":9,"phase":"Grupos","group_name":"E","home_team":"Alemania","away_team":"Curazao","date":"14 Jun","time":"12:00","match_num":9});
+STATIC_MATCHES.push({"id":10,"phase":"Grupos","group_name":"F","home_team":"Países Bajos","away_team":"Japón","date":"14 Jun","time":"15:00","match_num":10});
+STATIC_MATCHES.push({"id":11,"phase":"Grupos","group_name":"E","home_team":"Costa de Marfil","away_team":"Ecuador","date":"14 Jun","time":"18:00","match_num":11});
+STATIC_MATCHES.push({"id":12,"phase":"Grupos","group_name":"F","home_team":"Suecia","away_team":"Túnez","date":"14 Jun","time":"21:00","match_num":12});
+STATIC_MATCHES.push({"id":13,"phase":"Grupos","group_name":"H","home_team":"España","away_team":"Cabo Verde","date":"15 Jun","time":"11:00","match_num":13});
+STATIC_MATCHES.push({"id":14,"phase":"Grupos","group_name":"G","home_team":"Bélgica","away_team":"Egipto","date":"15 Jun","time":"14:00","match_num":14});
+STATIC_MATCHES.push({"id":15,"phase":"Grupos","group_name":"H","home_team":"Arabia Saudita","away_team":"Uruguay","date":"15 Jun","time":"17:00","match_num":15});
+STATIC_MATCHES.push({"id":16,"phase":"Grupos","group_name":"G","home_team":"Irán","away_team":"Nueva Zelanda","date":"15 Jun","time":"20:00","match_num":16});
+STATIC_MATCHES.push({"id":17,"phase":"Grupos","group_name":"I","home_team":"Francia","away_team":"Senegal","date":"16 Jun","time":"14:00","match_num":17});
+STATIC_MATCHES.push({"id":18,"phase":"Grupos","group_name":"I","home_team":"Irak","away_team":"Noruega","date":"16 Jun","time":"17:00","match_num":18});
+STATIC_MATCHES.push({"id":19,"phase":"Grupos","group_name":"J","home_team":"Argentina","away_team":"Argelia","date":"16 Jun","time":"20:00","match_num":19});
+STATIC_MATCHES.push({"id":20,"phase":"Grupos","group_name":"J","home_team":"Austria","away_team":"Jordania","date":"16 Jun","time":"23:00","match_num":20});
+STATIC_MATCHES.push({"id":21,"phase":"Grupos","group_name":"K","home_team":"Portugal","away_team":"RD Congo","date":"17 Jun","time":"12:00","match_num":21});
+STATIC_MATCHES.push({"id":22,"phase":"Grupos","group_name":"L","home_team":"Inglaterra","away_team":"Croacia","date":"17 Jun","time":"15:00","match_num":22});
+STATIC_MATCHES.push({"id":23,"phase":"Grupos","group_name":"L","home_team":"Ghana","away_team":"Panamá","date":"17 Jun","time":"18:00","match_num":23});
+STATIC_MATCHES.push({"id":24,"phase":"Grupos","group_name":"K","home_team":"Uzbekistán","away_team":"Colombia","date":"17 Jun","time":"21:00","match_num":24});
+STATIC_MATCHES.push({"id":25,"phase":"Grupos","group_name":"A","home_team":"República Checa","away_team":"Sudáfrica","date":"18 Jun","time":"11:00","match_num":25});
+STATIC_MATCHES.push({"id":26,"phase":"Grupos","group_name":"B","home_team":"Suiza","away_team":"Bosnia y Herzegovina","date":"18 Jun","time":"14:00","match_num":26});
+STATIC_MATCHES.push({"id":27,"phase":"Grupos","group_name":"B","home_team":"Canadá","away_team":"Qatar","date":"18 Jun","time":"17:00","match_num":27});
+STATIC_MATCHES.push({"id":28,"phase":"Grupos","group_name":"A","home_team":"México","away_team":"Corea del Sur","date":"18 Jun","time":"20:00","match_num":28});
+STATIC_MATCHES.push({"id":29,"phase":"Grupos","group_name":"D","home_team":"Estados Unidos","away_team":"Australia","date":"19 Jun","time":"14:00","match_num":29});
+STATIC_MATCHES.push({"id":30,"phase":"Grupos","group_name":"C","home_team":"Escocia","away_team":"Marruecos","date":"19 Jun","time":"17:00","match_num":30});
+STATIC_MATCHES.push({"id":31,"phase":"Grupos","group_name":"C","home_team":"Brasil","away_team":"Haití","date":"19 Jun","time":"20:00","match_num":31});
+STATIC_MATCHES.push({"id":32,"phase":"Grupos","group_name":"D","home_team":"Turquía","away_team":"Paraguay","date":"19 Jun","time":"23:00","match_num":32});
+STATIC_MATCHES.push({"id":33,"phase":"Grupos","group_name":"F","home_team":"Países Bajos","away_team":"Suecia","date":"20 Jun","time":"14:00","match_num":33});
+STATIC_MATCHES.push({"id":34,"phase":"Grupos","group_name":"E","home_team":"Alemania","away_team":"Costa de Marfil","date":"20 Jun","time":"15:00","match_num":34});
+STATIC_MATCHES.push({"id":35,"phase":"Grupos","group_name":"E","home_team":"Ecuador","away_team":"Curazao","date":"20 Jun","time":"19:00","match_num":35});
+STATIC_MATCHES.push({"id":36,"phase":"Grupos","group_name":"F","home_team":"Túnez","away_team":"Japón","date":"20 Jun","time":"23:00","match_num":36});
+STATIC_MATCHES.push({"id":37,"phase":"Grupos","group_name":"H","home_team":"España","away_team":"Arabia Saudita","date":"21 Jun","time":"11:00","match_num":37});
+STATIC_MATCHES.push({"id":38,"phase":"Grupos","group_name":"G","home_team":"Bélgica","away_team":"Irán","date":"21 Jun","time":"14:00","match_num":38});
+STATIC_MATCHES.push({"id":39,"phase":"Grupos","group_name":"H","home_team":"Uruguay","away_team":"Cabo Verde","date":"21 Jun","time":"17:00","match_num":39});
+STATIC_MATCHES.push({"id":40,"phase":"Grupos","group_name":"G","home_team":"Nueva Zelanda","away_team":"Egipto","date":"21 Jun","time":"20:00","match_num":40});
+STATIC_MATCHES.push({"id":41,"phase":"Grupos","group_name":"J","home_team":"Argentina","away_team":"Austria","date":"22 Jun","time":"12:00","match_num":41});
+STATIC_MATCHES.push({"id":42,"phase":"Grupos","group_name":"I","home_team":"Francia","away_team":"Irak","date":"22 Jun","time":"16:00","match_num":42});
+STATIC_MATCHES.push({"id":43,"phase":"Grupos","group_name":"I","home_team":"Noruega","away_team":"Senegal","date":"22 Jun","time":"19:00","match_num":43});
+STATIC_MATCHES.push({"id":44,"phase":"Grupos","group_name":"J","home_team":"Jordania","away_team":"Argelia","date":"22 Jun","time":"22:00","match_num":44});
+STATIC_MATCHES.push({"id":45,"phase":"Grupos","group_name":"K","home_team":"Portugal","away_team":"Uzbekistán","date":"23 Jun","time":"12:00","match_num":45});
+STATIC_MATCHES.push({"id":46,"phase":"Grupos","group_name":"L","home_team":"Inglaterra","away_team":"Ghana","date":"23 Jun","time":"15:00","match_num":46});
+STATIC_MATCHES.push({"id":47,"phase":"Grupos","group_name":"L","home_team":"Panamá","away_team":"Croacia","date":"23 Jun","time":"18:00","match_num":47});
+STATIC_MATCHES.push({"id":48,"phase":"Grupos","group_name":"K","home_team":"Colombia","away_team":"RD Congo","date":"23 Jun","time":"21:00","match_num":48});
+STATIC_MATCHES.push({"id":49,"phase":"Grupos","group_name":"B","home_team":"Suiza","away_team":"Canadá","date":"24 Jun","time":"14:00","match_num":49});
+STATIC_MATCHES.push({"id":50,"phase":"Grupos","group_name":"B","home_team":"Bosnia y Herzegovina","away_team":"Qatar","date":"24 Jun","time":"14:00","match_num":50});
+STATIC_MATCHES.push({"id":51,"phase":"Grupos","group_name":"C","home_team":"Escocia","away_team":"Brasil","date":"24 Jun","time":"17:00","match_num":51});
+STATIC_MATCHES.push({"id":52,"phase":"Grupos","group_name":"C","home_team":"Marruecos","away_team":"Haití","date":"24 Jun","time":"17:00","match_num":52});
+STATIC_MATCHES.push({"id":53,"phase":"Grupos","group_name":"A","home_team":"República Checa","away_team":"México","date":"24 Jun","time":"20:00","match_num":53});
+STATIC_MATCHES.push({"id":54,"phase":"Grupos","group_name":"A","home_team":"Sudáfrica","away_team":"Corea del Sur","date":"24 Jun","time":"20:00","match_num":54});
+STATIC_MATCHES.push({"id":55,"phase":"Grupos","group_name":"E","home_team":"Curazao","away_team":"Costa de Marfil","date":"25 Jun","time":"15:00","match_num":55});
+STATIC_MATCHES.push({"id":56,"phase":"Grupos","group_name":"E","home_team":"Ecuador","away_team":"Alemania","date":"25 Jun","time":"15:00","match_num":56});
+STATIC_MATCHES.push({"id":57,"phase":"Grupos","group_name":"F","home_team":"Japón","away_team":"Suecia","date":"25 Jun","time":"18:00","match_num":57});
+STATIC_MATCHES.push({"id":58,"phase":"Grupos","group_name":"F","home_team":"Túnez","away_team":"Países Bajos","date":"25 Jun","time":"18:00","match_num":58});
+STATIC_MATCHES.push({"id":59,"phase":"Grupos","group_name":"D","home_team":"Turquía","away_team":"Estados Unidos","date":"25 Jun","time":"21:00","match_num":59});
+STATIC_MATCHES.push({"id":60,"phase":"Grupos","group_name":"D","home_team":"Paraguay","away_team":"Australia","date":"25 Jun","time":"21:00","match_num":60});
+STATIC_MATCHES.push({"id":61,"phase":"Grupos","group_name":"I","home_team":"Noruega","away_team":"Francia","date":"26 Jun","time":"14:00","match_num":61});
+STATIC_MATCHES.push({"id":62,"phase":"Grupos","group_name":"I","home_team":"Senegal","away_team":"Irak","date":"26 Jun","time":"14:00","match_num":62});
+STATIC_MATCHES.push({"id":63,"phase":"Grupos","group_name":"H","home_team":"Cabo Verde","away_team":"Arabia Saudita","date":"26 Jun","time":"19:00","match_num":63});
+STATIC_MATCHES.push({"id":64,"phase":"Grupos","group_name":"H","home_team":"Uruguay","away_team":"España","date":"26 Jun","time":"19:00","match_num":64});
+STATIC_MATCHES.push({"id":65,"phase":"Grupos","group_name":"G","home_team":"Egipto","away_team":"Irán","date":"26 Jun","time":"22:00","match_num":65});
+STATIC_MATCHES.push({"id":66,"phase":"Grupos","group_name":"G","home_team":"Nueva Zelanda","away_team":"Bélgica","date":"26 Jun","time":"22:00","match_num":66});
+STATIC_MATCHES.push({"id":67,"phase":"Grupos","group_name":"L","home_team":"Panamá","away_team":"Inglaterra","date":"27 Jun","time":"16:00","match_num":67});
+STATIC_MATCHES.push({"id":68,"phase":"Grupos","group_name":"L","home_team":"Croacia","away_team":"Ghana","date":"27 Jun","time":"16:00","match_num":68});
+STATIC_MATCHES.push({"id":69,"phase":"Grupos","group_name":"K","home_team":"Colombia","away_team":"Portugal","date":"27 Jun","time":"18:30","match_num":69});
+STATIC_MATCHES.push({"id":70,"phase":"Grupos","group_name":"K","home_team":"RD Congo","away_team":"Uzbekistán","date":"27 Jun","time":"18:30","match_num":70});
+STATIC_MATCHES.push({"id":71,"phase":"Grupos","group_name":"J","home_team":"Argelia","away_team":"Austria","date":"27 Jun","time":"21:00","match_num":71});
+STATIC_MATCHES.push({"id":72,"phase":"Grupos","group_name":"J","home_team":"Jordania","away_team":"Argentina","date":"27 Jun","time":"21:00","match_num":72});
 
 const elimPhasesConfig = [
   { p: '16avos', count: 16, start: 73, dates: ['28 Jun','29 Jun','30 Jun','01 Jul'] },
