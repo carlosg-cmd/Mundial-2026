@@ -307,32 +307,49 @@ async function handleAuth() {
   const btn = document.getElementById('auth-btn');
   btn.disabled = true; btn.textContent = '...';
 
-  // Usamos email derivado del usuario para Supabase Auth
-  // Formato: usuario@mundial2026.com (no es email real, es para Supabase internamente)
-  const fakeEmail = username.toLowerCase().replace(/\s/g, '_') + '@mundial2026.com';
+  try {
+    if (authMode === 'login') {
+      const { data, error } = await db.from('custom_users')
+        .select('*')
+        .eq('username', username)
+        .eq('pin', pass)
+        .maybeSingle();
+        
+      if (error || !data) {
+        showAuthMsg('Apodo o PIN incorrectos', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+        return;
+      }
+      
+      startSession(data);
+    } else {
+      // Registrar
+      // Chequear si existe
+      const { data: exist } = await db.from('custom_users').select('id').eq('username', username).maybeSingle();
+      if (exist) {
+        showAuthMsg('Ese apodo ya está en uso', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Crear cuenta';
+        return;
+      }
 
-  let error, data;
-  if (authMode === 'login') {
-    ({ data, error } = await db.auth.signInWithPassword({ email: fakeEmail, password: pass }));
-  } else {
-    // Registrar
-    ({ data, error } = await db.auth.signUp({ email: fakeEmail, password: pass }));
-    if (!error && data?.user) {
-      // Guardar el apodo en user_metadata
-      await db.auth.updateUser({ data: { username: username } });
+      const { data, error } = await db.from('custom_users')
+        .insert([{ username: username, pin: pass }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      
       showAuthMsg('✅ ¡Cuenta creada! Puedes entrar ahora.', 'ok');
       authMode = 'login';
       document.getElementById('tab-login').classList.add('active');
       document.getElementById('tab-register').classList.remove('active');
       document.getElementById('auth-btn').textContent = 'Entrar';
       btn.disabled = false;
-      return;
     }
-  }
-
-  if (error) {
-    const msg = error.message.includes('Invalid') ? 'Usuario o contraseña incorrectos' : error.message;
-    showAuthMsg(msg, 'error');
+  } catch (err) {
+    showAuthMsg('Error al conectar: ' + err.message, 'error');
     btn.disabled = false;
     btn.textContent = authMode==='login' ? 'Entrar' : 'Crear cuenta';
   }
@@ -344,25 +361,34 @@ function showAuthMsg(msg, type) {
 }
 function hideAuthMsg() { document.getElementById('auth-msg').style.display='none'; }
 
-async function logout() {
-  await db.auth.signOut();
+function startSession(user) {
+  currentUser = user;
+  localStorage.setItem('mundial26_user', JSON.stringify(user));
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-name-display').textContent = user.username;
+  loadAll().then(() => renderAll());
+}
+
+function logout() {
+  localStorage.removeItem('mundial26_user');
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
   currentUser = null; userResults={}; userGoals={}; userElim={};
+  document.getElementById('auth-username').value = '';
+  document.getElementById('auth-password').value = '';
+  hideAuthMsg();
 }
 
 // ══════════════════════════════════════════
 //  BOOTSTRAP
 // ══════════════════════════════════════════
-db.auth.onAuthStateChange(async (event, session) => {
-  if (session?.user) {
-    currentUser = session.user;
-    const displayName = session.user.user_metadata?.username || currentUser.email.split('+')[0];
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('user-name-display').textContent = displayName;
-    await loadAll();
-    renderAll();
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('mundial26_user');
+  if (saved) {
+    try {
+      startSession(JSON.parse(saved));
+    } catch(e){}
   }
 });
 
