@@ -238,12 +238,18 @@
     </div>
   </header>
 
-  <div class="tabs">
-    <button class="tab active" id="tab-partidos" onclick="setView('partidos')">📋 Partidos</button>
-    <button class="tab" id="tab-elim" onclick="setView('elim')">⚔️ Eliminatorias</button>
-    <button class="tab" id="tab-tabla" onclick="setView('tabla')">📊 Tabla</button>
-    <button class="tab" id="tab-goles" onclick="setView('goles')">⚽ Goles</button>
-    <button class="tab" id="tab-campeon" onclick="setView('campeon')">🏆 Campeón</button>
+  <div class="tabs" style="display:flex; justify-content:space-between; gap:5px; margin-bottom:15px; overflow:visible;">
+    <button class="tab active" id="tab-partidos" onclick="setView('partidos')" style="flex:1; padding:10px 2px; font-size:12px; text-align:center;">Grupos</button>
+    <button class="tab" id="tab-elim" onclick="setView('elim')" style="flex:1; padding:10px 2px; font-size:12px; text-align:center;">Eliminatorias</button>
+    <div style="position:relative; flex:1;">
+      <button class="tab" onclick="const m = document.getElementById('moreMenu'); m.style.display = m.style.display==='block'?'none':'block';" style="width:100%; padding:10px 2px; font-size:12px; text-align:center;">Más ☰</button>
+      <div id="moreMenu" style="display:none; position:absolute; top:100%; right:0; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:5px; z-index:100; min-width:160px; box-shadow:0 5px 15px rgba(0,0,0,0.5); margin-top:5px;">
+        <button class="tab" id="tab-tabla" onclick="setView('tabla'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; margin-bottom:4px; border:none; border-radius:4px;">📊 Tabla de Posiciones</button>
+        <button class="tab" id="tab-goles" onclick="setView('goles'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; margin-bottom:4px; border:none; border-radius:4px;">⚽ Tabla de Goles</button>
+        <button class="tab" id="tab-campeon" onclick="setView('campeon'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; margin-bottom:4px; border:none; border-radius:4px;">🏆 Predice Campeón</button>
+        <button class="tab" id="tab-instalar" onclick="setView('instalar'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; border:none; border-radius:4px;">📱 Instalar App</button>
+      </div>
+    </div>
   </div>
 
   <div class="content">
@@ -504,9 +510,11 @@ async function loadAll() {
 // ══════════════════════════════════════════
 function setView(v) {
   currentView = v;
-  ['partidos','elim','tabla','goles','campeon'].forEach(name => {
-    document.getElementById('view-'+name).style.display = name===v ? '' : 'none';
-    document.getElementById('tab-'+name).classList.toggle('active', name===v);
+  ['partidos','elim','tabla','goles','campeon','instalar'].forEach(name => {
+    const section = document.getElementById('view-'+name);
+    if(section) section.style.display = name===v ? '' : 'none';
+    const tab = document.getElementById('tab-'+name);
+    if(tab) tab.classList.toggle('active', name===v);
   });
   renderAll();
 }
@@ -517,6 +525,7 @@ function renderAll() {
   if (currentView==='tabla')    renderTabla();
   if (currentView==='goles')    renderGoleadores();
   if (currentView==='campeon')  renderCampeon();
+  // 'instalar' view is static, no render function needed
 }
 
 // ══════════════════════════════════════════
@@ -1009,5 +1018,8 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW Error:', err));
 }
 </script>
+<footer style="text-align:center; padding:20px; font-size:12px; color:var(--text-muted); border-top:1px solid var(--border); margin-top:20px;">
+  DESARROLLADO POR CARLOS ANDRES JIMENEZ MURILLO
+</footer>
 </body>
 </html>
