@@ -191,7 +191,7 @@
 <div id="auth-screen">
   <div class="auth-card">
     
-    <img src="./logo.png" style="height: 90px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));" alt="Mundial 2026">
+    <img src="./logo.png" style="height: 90px; margin: 0 auto 20px auto; display: block; filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));" alt="Mundial 2026">
     <div class="auth-title">MUNDIAL 2026</div>
     <div class="auth-sub" style="font-weight:bold; letter-spacing:1px; margin-bottom:20px;">LLEVA TU REGISTRO Y DISFRUTA</div>
     <div class="auth-tabs">
@@ -274,6 +274,7 @@
         <button class="tab" id="tab-goles" onclick="setView('goles'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; margin-bottom:4px; border:none; border-radius:4px;">⚽ Tabla de Goles</button>
         <button class="tab" id="tab-campeon" onclick="setView('campeon'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; margin-bottom:4px; border:none; border-radius:4px;">🏆 Predice Campeón</button>
         <button class="tab" id="tab-instalar" onclick="setView('instalar'); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; border:none; border-radius:4px;">📱 Instalar App</button>
+        <button class="tab" onclick="shareApp(); document.getElementById('moreMenu').style.display='none';" style="width:100%; text-align:left; border:none; border-radius:4px; margin-top:4px; color:#60a5fa;">📤 Compartir App</button>
       </div>
     </div>
   </div>
@@ -572,7 +573,16 @@ function startSession(user) {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-name-display').textContent = user.username;
+  if (!localStorage.getItem('m26_welcome_shown_' + user.id)) {
+    const modal = document.getElementById('welcome-modal');
+    if (modal) modal.style.display = 'flex';
+  }
   loadAll().then(() => renderAll());
+}
+
+function closeWelcome() {
+  document.getElementById('welcome-modal').style.display = 'none';
+  localStorage.setItem('m26_welcome_shown_' + currentUser.id, 'true');
 }
 
 function logout() {

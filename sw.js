@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mundial-2026-v9';
+const CACHE_NAME = 'mundial-2026-v11';
 const ASSETS = [
   './index.html',
   './manifest.json',
