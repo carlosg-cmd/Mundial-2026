@@ -78,6 +78,8 @@
 
     /* ── GROUP FILTER ── */
     .group-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .group-filter::-webkit-scrollbar { height: 6px; }
+    .group-filter::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 10px; }
     .gf-btn { padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: var(--bg3); color: var(--muted); transition: all .2s; }
     .gf-btn.active { background: var(--accent); color: #fff; }
 
@@ -94,7 +96,7 @@
       box-shadow: 0 2px 12px #00000030;
     }
     .match-card.done { border-color: #2d3f55; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
     .card-tag { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: 1px; }
     .btn-edit { font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--bg3); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
 
@@ -225,7 +227,7 @@
   </header>
 
   <div class="tabs">
-    <button class="tab active" id="tab-partidos" onclick="setView('partidos')">📋 Grupos</button>
+    <button class="tab active" id="tab-partidos" onclick="setView('partidos')">📋 Partidos</button>
     <button class="tab" id="tab-elim" onclick="setView('elim')">⚔️ Eliminatorias</button>
     <button class="tab" id="tab-tabla" onclick="setView('tabla')">📊 Tabla</button>
     <button class="tab" id="tab-goles" onclick="setView('goles')">⚽ Goles</button>
@@ -247,16 +249,16 @@
 
 <script>
 // ══════════════════════════════════════════
-//  CONFIGURACIÓN — reemplaza con tus datos
+//  CONFIGURACIÓN
 // ══════════════════════════════════════════
-const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
-const SUPABASE_KEY = 'TU_ANON_KEY';
+const SUPABASE_URL = 'https://onijicyzoymgfvtaafgb.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uaWppY3l6b3ltZ2Z2dGFhZmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTI4NTMsImV4cCI6MjA5Njg2ODg1M30.2qOU2T-oaP01hZUwvZN38NR7W7k08bqSW3sGWE6U-ks';
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════
-//  DATOS ESTÁTICOS Y BANDERAS (CORREGIDO PARA WINDOWS)
+//  DATOS ESTÁTICOS Y BANDERAS (CERO FALLOS)
 // ══════════════════════════════════════════
 const FLAGS = {
   'México':'mx', 'Sudáfrica':'za', 'Corea del Sur':'kr', 'República Checa':'cz',
@@ -287,6 +289,46 @@ const GROUPS = {
   L:['Inglaterra','Croacia','Ghana','Panamá'],
 };
 const ELIM_PHASES = ['16avos','Octavos','Cuartos','Semis','3er Puesto','Final'];
+const MATCH_DATES = [
+  '11 Jun','12 Jun','13 Jun','14 Jun','15 Jun','16 Jun','17 Jun','18 Jun','19 Jun',
+  '20 Jun','21 Jun','22 Jun','23 Jun','24 Jun','25 Jun','26 Jun','27 Jun'
+];
+const TIMES = ['12:00', '15:00', '18:00', '21:00'];
+
+// Generador automático de 104 partidos para no depender de Supabase (Carga ultra rápida)
+let STATIC_MATCHES = [];
+let mId = 1;
+
+Object.keys(GROUPS).forEach((g, idx) => {
+  const t = GROUPS[g];
+  const d1 = MATCH_DATES[Math.floor(idx/2)];
+  const d2 = MATCH_DATES[Math.floor(idx/2) + 5];
+  const d3 = MATCH_DATES[Math.floor(idx/2) + 10];
+  
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[0], away_team: t[1], date: d1, time: TIMES[0], match_num: mId-1 });
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[2], away_team: t[3], date: d1, time: TIMES[2], match_num: mId-1 });
+  
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[0], away_team: t[2], date: d2, time: TIMES[1], match_num: mId-1 });
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[3], away_team: t[1], date: d2, time: TIMES[3], match_num: mId-1 });
+  
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[3], away_team: t[0], date: d3, time: TIMES[0], match_num: mId-1 });
+  STATIC_MATCHES.push({ id: mId++, phase: 'Grupos', group_name: g, home_team: t[1], away_team: t[2], date: d3, time: TIMES[2], match_num: mId-1 });
+});
+
+const elimPhasesConfig = [
+  { p: '16avos', count: 16, start: 73, dates: ['28 Jun','29 Jun','30 Jun','01 Jul'] },
+  { p: 'Octavos', count: 8, start: 89, dates: ['04 Jul','05 Jul'] },
+  { p: 'Cuartos', count: 4, start: 97, dates: ['09 Jul','10 Jul'] },
+  { p: 'Semis', count: 2, start: 101, dates: ['14 Jul','15 Jul'] },
+  { p: '3er Puesto', count: 1, start: 103, dates: ['18 Jul'] },
+  { p: 'Final', count: 1, start: 104, dates: ['19 Jul'] },
+];
+
+elimPhasesConfig.forEach(ep => {
+  for(let i=0; i<ep.count; i++) {
+    STATIC_MATCHES.push({ id: ep.start+i, phase: ep.p, group_name: null, home_team: null, away_team: null, date: ep.dates[Math.floor(i/(ep.count/ep.dates.length))] || ep.dates[0], time: '18:00', match_num: ep.start+i });
+  }
+});
 
 // En lugar de texto, usamos una imagen oficial para la bandera
 const flag = t => FLAGS[t] 
@@ -297,11 +339,13 @@ const flag = t => FLAGS[t]
 //  ESTADO GLOBAL
 // ══════════════════════════════════════════
 let currentUser = null;
-let allMatches   = [];
+let allMatches   = STATIC_MATCHES;
 let userResults  = {};
 let userGoals    = {};
 let userElim     = {};
 let currentView  = 'partidos';
+let partidosViewMode = 'fecha'; // 'fecha' o 'grupo'
+let filterDate   = '11 Jun';
 let filterGroup  = 'A';
 let filterPhase  = '16avos';
 let editingMatchId = null;
@@ -311,7 +355,7 @@ let userChampion = null;
 let isChoosingChampion = false;
 
 // ══════════════════════════════════════════
-//  AUTH con TABLA CUSTOM_USERS (Anti-Bloqueos)
+//  AUTH con TABLA CUSTOM_USERS
 // ══════════════════════════════════════════
 function switchAuthTab(mode) {
   authMode = mode;
@@ -322,8 +366,8 @@ function switchAuthTab(mode) {
 }
 
 async function handleAuth() {
-  const username = document.getElementById('auth-username').value.trim();
-  const pass  = document.getElementById('auth-password').value;
+  const username = document.getElementById('auth-username').value.trim().toLowerCase();
+  const pass  = document.getElementById('auth-password').value.trim();
   if (!username || !pass) { showAuthMsg('Completa todos los campos', 'error'); return; }
 
   const btn = document.getElementById('auth-btn');
@@ -346,8 +390,6 @@ async function handleAuth() {
       
       startSession(data);
     } else {
-      // Registrar
-      // Chequear si existe
       const { data: exist } = await db.from('custom_users').select('id').eq('username', username).maybeSingle();
       if (exist) {
         showAuthMsg('Ese apodo ya está en uso', 'error');
@@ -415,9 +457,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadAll() {
-  const { data: matches } = await db.from('matches').select('*').order('match_num');
-  allMatches = matches || [];
-
+  // Los partidos ya están cargados estáticamente en STATIC_MATCHES, por lo que nunca fallarán.
+  
   const { data: results } = await db.from('user_results').select('*').eq('user_id', currentUser.id);
   userResults = {};
   (results||[]).forEach(r => userResults[r.match_id] = r);
@@ -458,23 +499,52 @@ function renderAll() {
 }
 
 // ══════════════════════════════════════════
-//  PARTIDOS DE GRUPOS
+//  PARTIDOS DE GRUPOS (FECHAS Y GRUPOS)
 // ══════════════════════════════════════════
 function renderPartidos() {
   const el = document.getElementById('view-partidos');
-  const groupMatches = allMatches.filter(m => m.group_name === filterGroup);
+  
+  let html = `<div style="display:flex; margin-bottom:14px; background:var(--bg3); border-radius:8px; padding:4px;">
+    <button onclick="setPartidosMode('fecha')" style="flex:1; padding:8px; border-radius:6px; border:none; cursor:pointer; background:${partidosViewMode==='fecha'?'var(--accent)':'transparent'}; color:${partidosViewMode==='fecha'?'#fff':'var(--muted)'}; font-weight:700; transition:all 0.2s;">📅 Por Fecha</button>
+    <button onclick="setPartidosMode('grupo')" style="flex:1; padding:8px; border-radius:6px; border:none; cursor:pointer; background:${partidosViewMode==='grupo'?'var(--accent)':'transparent'}; color:${partidosViewMode==='grupo'?'#fff':'var(--muted)'}; font-weight:700; transition:all 0.2s;">📋 Por Grupo</button>
+  </div>`;
 
-  let html = '<div class="group-filter">';
-  Object.keys(GROUPS).forEach(g => {
-    html += `<button class="gf-btn ${g===filterGroup?'active':''}" onclick="setGroup('${g}')">Grupo ${g}</button>`;
-  });
-  html += '</div>';
+  if (partidosViewMode === 'grupo') {
+    html += '<div class="group-filter">';
+    Object.keys(GROUPS).forEach(g => {
+      html += `<button class="gf-btn ${g===filterGroup?'active':''}" onclick="setGroup('${g}')">Grupo ${g}</button>`;
+    });
+    html += '</div>';
 
-  groupMatches.forEach(m => { html += matchCardHTML(m); });
+    const groupMatches = allMatches.filter(m => m.group_name === filterGroup);
+    // Ordenar por número de partido dentro del grupo
+    groupMatches.sort((a,b) => a.match_num - b.match_num);
+    groupMatches.forEach(m => { html += matchCardHTML(m); });
+  } else {
+    // Modo Fecha
+    html += '<div class="group-filter" style="overflow-x:auto; flex-wrap:nowrap; padding-bottom:8px;">';
+    MATCH_DATES.forEach(d => {
+      html += `<button class="gf-btn ${d===filterDate?'active':''}" style="flex-shrink:0" onclick="setDate('${d}')">${d}</button>`;
+    });
+    html += '</div>';
+
+    const dateMatches = allMatches.filter(m => m.phase === 'Grupos' && m.date === filterDate);
+    // Ordenar por hora del partido
+    dateMatches.sort((a,b) => a.time.localeCompare(b.time));
+    
+    if (dateMatches.length === 0) {
+      html += `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">No hay partidos este día</div></div>`;
+    } else {
+      dateMatches.forEach(m => { html += matchCardHTML(m); });
+    }
+  }
+
   el.innerHTML = html;
 }
 
+function setPartidosMode(m) { partidosViewMode = m; renderPartidos(); }
 function setGroup(g) { filterGroup = g; renderPartidos(); }
+function setDate(d) { filterDate = d; renderPartidos(); }
 
 // ══════════════════════════════════════════
 //  ELIMINATORIAS
@@ -516,14 +586,16 @@ function matchCardHTML(m, isElim=false) {
   let html = `<div class="match-card ${hasResult?'done':''}" id="card-${m.id}">`;
 
   html += `<div class="card-header">
-    <span class="card-tag">PARTIDO ${m.match_num} · ${m.phase}${m.group_name?' · GRUPO '+m.group_name:''}</span>
+    <div>
+      <div class="card-tag">PARTIDO ${m.match_num} · ${m.phase}${m.group_name?' · GRUPO '+m.group_name:''}</div>
+      <div style="font-size:11px; color:#94a3b8; margin-top:4px; font-weight:600;">📅 ${m.date} · 🕒 ${m.time} (Hora COL)</div>
+    </div>
     ${hasResult && !isEditing ? `<button class="btn-edit" onclick="startEdit(${m.id}, ${isElim})">✏️ Editar</button>` : ''}
   </div>`;
 
   if (isElim && !teamsKnown && !isEditing) {
     html += `<div style="text-align:center;padding:10px 0;">
-      <div style="color:var(--muted);font-size:13px;margin-bottom:8px">⚔️ Partido ${m.match_num} — ${m.phase}</div>
-      <div style="color:#64748b;font-size:12px;margin-bottom:10px">${m.match_date || ''}</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:10px">⚔️ Define este partido de fase eliminatoria</div>
       <button class="btn-register" onclick="startEdit(${m.id}, true)">+ Definir equipos y resultado</button>
     </div>`;
     html += '</div>'; return html;
@@ -813,6 +885,7 @@ function renderGoleadores() {
     </div>
   `).join('');
 }
+
 // ══════════════════════════════════════════
 //  CAMPEÓN
 // ══════════════════════════════════════════
