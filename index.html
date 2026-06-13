@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mundial 2026 – Mi Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+window.shareApp = function() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Mundial 2026 Tracker',
+      text: '¡Lleva tu registro del Mundial 2026 y pronostica el campeón!',
+      url: window.location.href
+    }).catch(console.error);
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Enlace copiado al portapapeles. ¡Compártelo con tus amigos!');
+  }
+};
+
+</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
