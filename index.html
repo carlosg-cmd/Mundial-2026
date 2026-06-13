@@ -164,6 +164,20 @@
     .empty-text  { margin-top: 10px; font-size: 14px; }
 
     .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+
+    /* ── CAMPEON ── */
+    .champion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+    .champion-btn { background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all .2s; }
+    .champion-btn:hover { border-color: var(--accent); background: var(--bg2); }
+    .champion-btn.selected { border-color: var(--gold); background: #ffd70015; box-shadow: 0 0 10px #ffd70030; }
+    .champion-name { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; text-align: left; }
+    
+    .champion-banner { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 8px 24px #d9770640; margin-bottom: 20px; position: relative; overflow: hidden; }
+    .cb-title { font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.9; }
+    .cb-flag { margin-bottom: 10px; }
+    .cb-flag img { width: 60px !important; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .cb-name { font-size: 28px; font-weight: 900; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .btn-edit-champ { margin-top: 15px; background: rgba(0,0,0,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; backdrop-filter: blur(4px); }
   </style>
 </head>
 <body>
@@ -214,7 +228,8 @@
     <button class="tab active" id="tab-partidos" onclick="setView('partidos')">📋 Grupos</button>
     <button class="tab" id="tab-elim" onclick="setView('elim')">⚔️ Eliminatorias</button>
     <button class="tab" id="tab-tabla" onclick="setView('tabla')">📊 Tabla</button>
-    <button class="tab" id="tab-goles" onclick="setView('goles')">⚽ Goleadores</button>
+    <button class="tab" id="tab-goles" onclick="setView('goles')">⚽ Goles</button>
+    <button class="tab" id="tab-campeon" onclick="setView('campeon')">🏆 Campeón</button>
   </div>
 
   <div class="content">
@@ -222,6 +237,7 @@
     <div id="view-elim" style="display:none"></div>
     <div id="view-tabla" style="display:none"></div>
     <div id="view-goles" style="display:none"></div>
+    <div id="view-campeon" style="display:none"></div>
 
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; font-size: 11px; color: var(--muted); letter-spacing: 1px; font-weight: 700;">
       DESARROLLADO POR CARLOS ANDRES JIMENEZ MURILLO
@@ -233,28 +249,28 @@
 // ══════════════════════════════════════════
 //  CONFIGURACIÓN — reemplaza con tus datos
 // ══════════════════════════════════════════
-const SUPABASE_URL = 'https://onijicyzoymgfvtaafgb.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uaWppY3l6b3ltZ2Z2dGFhZmdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyOTI4NTMsImV4cCI6MjA5Njg2ODg1M30.2qOU2T-oaP01hZUwvZN38NR7W7k08bqSW3sGWE6U-ks';
+const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
+const SUPABASE_KEY = 'TU_ANON_KEY';
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════
-//  DATOS ESTÁTICOS
+//  DATOS ESTÁTICOS Y BANDERAS (CORREGIDO PARA WINDOWS)
 // ══════════════════════════════════════════
 const FLAGS = {
-  'México':'🇲🇽','Sudáfrica':'🇿🇦','Corea del Sur':'🇰🇷','República Checa':'🇨🇿',
-  'Canadá':'🇨🇦','Bosnia y Herzegovina':'🇧🇦','Qatar':'🇶🇦','Suiza':'🇨🇭',
-  'Brasil':'🇧🇷','Marruecos':'🇲🇦','Haití':'🇭🇹','Escocia':'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-  'Estados Unidos':'🇺🇸','Paraguay':'🇵🇾','Australia':'🇦🇺','Turquía':'🇹🇷',
-  'Alemania':'🇩🇪','Curazao':'🇨🇼','Costa de Marfil':'🇨🇮','Ecuador':'🇪🇨',
-  'Países Bajos':'🇳🇱','Japón':'🇯🇵','Suecia':'🇸🇪','Túnez':'🇹🇳',
-  'Bélgica':'🇧🇪','Egipto':'🇪🇬','Irán':'🇮🇷','Nueva Zelanda':'🇳🇿',
-  'España':'🇪🇸','Cabo Verde':'🇨🇻','Arabia Saudita':'🇸🇦','Uruguay':'🇺🇾',
-  'Francia':'🇫🇷','Senegal':'🇸🇳','Irak':'🇮🇶','Noruega':'🇳🇴',
-  'Argentina':'🇦🇷','Argelia':'🇩🇿','Austria':'🇦🇹','Jordania':'🇯🇴',
-  'Portugal':'🇵🇹','RD Congo':'🇨🇩','Uzbekistán':'🇺🇿','Colombia':'🇨🇴',
-  'Inglaterra':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','Croacia':'🇭🇷','Ghana':'🇬🇭','Panamá':'🇵🇦',
+  'México':'mx', 'Sudáfrica':'za', 'Corea del Sur':'kr', 'República Checa':'cz',
+  'Canadá':'ca', 'Bosnia y Herzegovina':'ba', 'Qatar':'qa', 'Suiza':'ch',
+  'Brasil':'br', 'Marruecos':'ma', 'Haití':'ht', 'Escocia':'gb-sct',
+  'Estados Unidos':'us', 'Paraguay':'py', 'Australia':'au', 'Turquía':'tr',
+  'Alemania':'de', 'Curazao':'cw', 'Costa de Marfil':'ci', 'Ecuador':'ec',
+  'Países Bajos':'nl', 'Japón':'jp', 'Suecia':'se', 'Túnez':'tn',
+  'Bélgica':'be', 'Egipto':'eg', 'Irán':'ir', 'Nueva Zelanda':'nz',
+  'España':'es', 'Cabo Verde':'cv', 'Arabia Saudita':'sa', 'Uruguay':'uy',
+  'Francia':'fr', 'Senegal':'sn', 'Irak':'iq', 'Noruega':'no',
+  'Argentina':'ar', 'Argelia':'dz', 'Austria':'at', 'Jordania':'jo',
+  'Portugal':'pt', 'RD Congo':'cd', 'Uzbekistán':'uz', 'Colombia':'co',
+  'Inglaterra':'gb-eng', 'Croacia':'hr', 'Ghana':'gh', 'Panamá':'pa',
 };
 const GROUPS = {
   A:['México','Sudáfrica','Corea del Sur','República Checa'],
@@ -271,7 +287,11 @@ const GROUPS = {
   L:['Inglaterra','Croacia','Ghana','Panamá'],
 };
 const ELIM_PHASES = ['16avos','Octavos','Cuartos','Semis','3er Puesto','Final'];
-const flag = t => FLAGS[t] || '🏳️';
+
+// En lugar de texto, usamos una imagen oficial para la bandera
+const flag = t => FLAGS[t] 
+  ? `<img src="https://flagcdn.com/w40/${FLAGS[t]}.png" alt="${t}" style="width:26px; border-radius:3px; vertical-align:middle; display:inline-block;">` 
+  : '🏳️';
 
 // ══════════════════════════════════════════
 //  ESTADO GLOBAL
@@ -287,9 +307,11 @@ let filterPhase  = '16avos';
 let editingMatchId = null;
 let editGoalsDraft = [];
 let authMode = 'login';
+let userChampion = null;
+let isChoosingChampion = false;
 
 // ══════════════════════════════════════════
-//  AUTH con USUARIO/APODO (sin email)
+//  AUTH con TABLA CUSTOM_USERS (Anti-Bloqueos)
 // ══════════════════════════════════════════
 function switchAuthTab(mode) {
   authMode = mode;
@@ -374,7 +396,7 @@ function logout() {
   localStorage.removeItem('mundial26_user');
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
-  currentUser = null; userResults={}; userGoals={}; userElim={};
+  currentUser = null; userResults={}; userGoals={}; userElim={}; userChampion=null;
   document.getElementById('auth-username').value = '';
   document.getElementById('auth-password').value = '';
   hideAuthMsg();
@@ -410,6 +432,9 @@ async function loadAll() {
   const { data: elim } = await db.from('user_elim_teams').select('*').eq('user_id', currentUser.id);
   userElim = {};
   (elim||[]).forEach(e => userElim[e.match_id] = e);
+
+  const { data: pred } = await db.from('user_predictions').select('*').eq('user_id', currentUser.id).maybeSingle();
+  userChampion = pred ? pred.champion : null;
 }
 
 // ══════════════════════════════════════════
@@ -417,7 +442,7 @@ async function loadAll() {
 // ══════════════════════════════════════════
 function setView(v) {
   currentView = v;
-  ['partidos','elim','tabla','goles'].forEach(name => {
+  ['partidos','elim','tabla','goles','campeon'].forEach(name => {
     document.getElementById('view-'+name).style.display = name===v ? '' : 'none';
     document.getElementById('tab-'+name).classList.toggle('active', name===v);
   });
@@ -429,6 +454,7 @@ function renderAll() {
   if (currentView==='elim')     renderElim();
   if (currentView==='tabla')    renderTabla();
   if (currentView==='goles')    renderGoleadores();
+  if (currentView==='campeon')  renderCampeon();
 }
 
 // ══════════════════════════════════════════
@@ -787,14 +813,58 @@ function renderGoleadores() {
     </div>
   `).join('');
 }
-
-// Init check sesión existente
-(async () => {
-  const { data: { session } } = await db.auth.getSession();
-  if (!session) {
-    document.getElementById('auth-screen').style.display = 'flex';
+// ══════════════════════════════════════════
+//  CAMPEÓN
+// ══════════════════════════════════════════
+function renderCampeon() {
+  const el = document.getElementById('view-campeon');
+  let html = '';
+  
+  if (userChampion && !isChoosingChampion) {
+    html += `<div class="champion-banner">
+      <div class="cb-title">TU CANDIDATO A CAMPEÓN ES</div>
+      <div class="cb-flag">${flag(userChampion)}</div>
+      <div class="cb-name">${userChampion}</div>
+      <button class="btn-edit-champ" onclick="isChoosingChampion=true; renderCampeon()">Cambiar elección</button>
+    </div>`;
+  } else {
+    html += `<div style="text-align:center; margin-bottom:15px;">
+      <h3 style="color:var(--gold); font-size:18px; font-weight:900;">¿Quién ganará el Mundial?</h3>
+      <p style="color:var(--muted); font-size:13px; margin-top:5px;">Elige a tu candidato para levantar la copa.</p>
+    </div>
+    <div class="champion-grid">`;
+    
+    const allTeams = Object.keys(FLAGS).sort();
+    allTeams.forEach(t => {
+      const sel = (userChampion === t) ? 'selected' : '';
+      html += `<button class="champion-btn ${sel}" onclick="saveChampion('${t}')">
+        <span>${flag(t)}</span>
+        <span class="champion-name">${t}</span>
+      </button>`;
+    });
+    
+    html += `</div>`;
+    
+    if (userChampion) {
+      html += `<div style="text-align:center; margin-top:15px;"><button class="btn-cancel" onclick="isChoosingChampion=false; renderCampeon()">Cancelar edición</button></div>`;
+    }
   }
-})();
+  
+  el.innerHTML = html;
+}
+
+async function saveChampion(team) {
+  userChampion = team;
+  isChoosingChampion = false;
+  renderCampeon();
+  
+  const existing = await db.from('user_predictions').select('user_id').eq('user_id', currentUser.id).maybeSingle();
+  if (existing.data) {
+    await db.from('user_predictions').update({ champion: team }).eq('user_id', currentUser.id);
+  } else {
+    await db.from('user_predictions').insert([{ user_id: currentUser.id, champion: team }]);
+  }
+}
 </script>
 </body>
 </html>
