@@ -216,6 +216,25 @@
      APP PRINCIPAL
 ══════════════════════════════════════════ -->
 <div id="app" style="display:none">
+
+  <!-- WELCOME MODAL -->
+  <div id="welcome-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(4px);">
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:25px; max-width:400px; width:100%; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+      <img src="./logo.png" style="height:60px; margin-bottom:15px; filter: drop-shadow(0 0 8px rgba(255,215,0,0.5));">
+      <h2 style="color:var(--gold); margin-bottom:15px; font-size:1.4rem;">¡Bienvenido al Tracker!</h2>
+      <p style="color:#e2e8f0; font-size:14px; line-height:1.6; margin-bottom:15px; text-align:left;">
+        Esta app está diseñada para que lleves el control total del Mundial 2026:
+      </p>
+      <ul style="color:#cbd5e1; font-size:13px; line-height:1.5; margin-bottom:20px; text-align:left; padding-left:20px;">
+        <li style="margin-bottom:8px;"><b>Carga Instantánea:</b> Funciona sin internet para que anotes tus resultados en cualquier lugar.</li>
+        <li style="margin-bottom:8px;"><b>Sync Inteligente:</b> Tus datos se suben a la nube automáticamente al recuperar la conexión.</li>
+        <li style="margin-bottom:8px;"><b>Estadísticas:</b> Calcula posiciones de grupos, goles y cruces automáticamente.</li>
+        <li><b>Predicciones:</b> ¡Anota a tu candidato favorito para llevarse la copa!</li>
+      </ul>
+      <button onclick="closeWelcome()" class="btn-primary" style="width:100%;">¡Entendido, a disfrutar!</button>
+    </div>
+  </div>
+
   <header>
     <div class="logo" style="display:flex; align-items:stretch; gap:12px; height:90px;">
       <img src="./logo.png" alt="Mundial 2026" style="height:100%; width:auto; object-fit:contain; filter: drop-shadow(0 0 5px rgba(255,215,0,0.15));" />
